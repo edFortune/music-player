@@ -4,21 +4,20 @@ const mm = require('musicmetadata');
 const electron = require('electron');
 const dialog = electron.dialog;
 const Promise = require('promise');
+const Player = require('../resources/javascripts/player');
 
 (function() {
   // Attributes ----------------
+  var _player;
   var _song = document.createElement('audio');
   var _playerBar = $('.player-bar-loading');
   var _buttonPlay = $('.button-play');
   var _buttonNext = $('.button-right');
   var _buttonPrev = $('.button-left');
-  var _isPlaying = false;
-  var _buttonPlayIcon = ['../resources/images/icon_btn_play.png', '../resources/images/icon_btn_pause.png'];
   var _buttonPlayImage = $('.button-play img');
   var _volumeBar = $('.volume-bar');
   var _volumeUp = $('.volume-up img');
   var _volumeDown = $('.volume-down img');
-  var _playingInterval = 0;
   var _startTimeCounter = $('.start-time');
   var _endTimeCounter = $('.end-time');
   var _musicTitle = $('.player-layout h4');
@@ -29,181 +28,80 @@ const Promise = require('promise');
   var _musicList = $('.body-player .side-music-info-container .list-music-play-container table.table-scroll tbody');
   var _musicDetails = $('.music.details-container');
   var _btnOpenFile = $('.btn-open-file');
-  var _listSelectedMusic = [];
   var _musicTags = {};
-  var _currentMusicPlayingIdx = 0;
+
 
   // Methodes -----------------
   _constructor();
-  function _constructor(){
+
+  function _constructor() {
+    _player = new Player(_song);
+    _player.setPlayerBar(_playerBar);
+    _player.setStartTimeCounter(_startTimeCounter);
+    _player.setEndTimeCounter(_endTimeCounter);
+    _player.setButtonPlayImage(_buttonPlayImage);
     //
-    _song.setAttribute('src', 'D:/Music/Miley_Cyrus_When_I_Look_At_You.mp3');
+    _playerBar.change(_player.onChange_playerBar);
     //
-    _song.onended = _onEnded_musicPlaying;
+    _buttonPlay.on('click', _player.onClick_ButtonPlay);
     //
-    _playerBar.change(_onChange_playerBar);
+    _buttonNext.on('click', _player.onClick_ButtonNext.bind(null, showInfo));
     //
-    _buttonPlay.on('click', _onClick_ButtonPlay);
+    _buttonPrev.on('click', _player.onClick_ButtonPrev.bind(null, showInfo));
     //
-    _buttonNext.on('click', _onClick_ButtonNext);
+    _volumeBar.on('change', _player.onChange_volumeBar);
     //
-    _buttonPrev.on('click', _onClick_ButtonPrev);
+    _volumeUp.on('click', _player.onClick_volumeUp.bind(null, _volumeBar));
     //
-    _volumeBar.on('change',_onChange_volumeBar);
-    //
-    _song.volume = (_volumeBar.val() / 100);
-    //
-    _volumeUp.click(_onClick_volumeUp);
-    //
-    _volumeDown.click(_onClick_volumeDown);
+    _volumeDown.on('click', _player.onClick_volumeDown.bind(null, _volumeBar));
     //
     _musicList.delegate("tr td", "dblclick", _onDoubleClick_rowTable);
     //
-    _btnOpenFile.on('change',_onClick_btnOpenFile);
-
-  }
-
-  function _onClick_ButtonPlay() {
-    if(_listSelectedMusic.length == 0){
-      return;
-    }
-    _isPlaying = !_isPlaying;
-    (_isPlaying) ?_onPlay() : _onPause();
-  }
-
-  function _onClick_ButtonNext() {
-    _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) + 1;
-    if( parseInt(_currentMusicPlayingIdx) < parseInt(_listSelectedMusic.length) ) {
-      _selectedMusicToPlay(_currentMusicPlayingIdx)
-    }else {
-      _currentMusicPlayingIdx =  parseInt(_currentMusicPlayingIdx) - 1;
-    }
-  }
-
-  function _onClick_ButtonPrev() {
-    _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) - 1;
-    if( parseInt(_currentMusicPlayingIdx) >= 0) {
-      _selectedMusicToPlay(_currentMusicPlayingIdx)
-    }else {
-      _currentMusicPlayingIdx =  parseInt(_currentMusicPlayingIdx) + 1;
-    }
-  }
-
-  function _onPlay(musicTag) {
-    _song.play();
-    _buttonPlayImage.attr('src', _buttonPlayIcon[1]);
-    var x = 0;
-    _playingInterval = setInterval(function(){
-      _playerBar.val(_song.currentTime.toFixed(0));
-      _startTimeCounter.text(convertSeconds(_song.currentTime.toFixed(0)));
-      if(x < 2){
-        _displayMusicInfo(musicTag);
-        x = x + 1;
-      }
-
-    }, 1000);
-  }
-
-  function _onPause() {
-    _song.pause();
-    _buttonPlayImage.attr('src', _buttonPlayIcon[0]);
-    clearInterval(_playingInterval);
-  }
-
-  function _displayMusicInfo(musicTag) {
-    var musicTitle = (musicTag.title) ? musicTag.title : _listSelectedMusic[_currentMusicPlayingIdx].name;
+    _btnOpenFile.on('change', _onClick_btnOpenFile);
     //
-    _musicTitle.text(musicTitle);
-    _musicSubTitle.text(musicTag.artist + " - " + musicTag.album);
-
-    //
-    _musicTrack.text(musicTitle);
-    _musicArtist.text(musicTag.artist);
-    _musicAlbum.text(musicTag.album);
-
-    _endTimeCounter.text(convertSeconds(_song.duration.toFixed(0)));
-    _playerBar.attr('max', _song.duration.toFixed(0));
-  }
-
-  function convertSeconds(sec) {
-    return (
-      parseInt(sec / 60) + ":" +
-      ( (sec % 60) < 10 ?  '0' + (parseInt(sec % 60)) : (parseInt(sec % 60)) )
-    );
-  }
-
-  function _onChange_volumeBar(){
-    if(_song.muted){
-      _song.muted = false;
-    }
-    _song.volume = ($(this).val() / 100);
-  }
-
-  function _onChange_playerBar() {
-    _song.currentTime = $(this).val();
-  }
-
-  function _onClick_volumeDown() {
-    _volumeBar.val(0);
-    _song.muted = true;
-  }
-
-  function _onClick_volumeUp() {
-    _volumeBar.val(100);
-    _volumeBar.trigger('change');
-  }
-
-  function _onEnded_musicPlaying() {
-    _onClick_ButtonNext();
-  }
-
-  function _clearTableList() {
-    _musicList.empty();
-  }
-
-  function addMusicInfoToList(musicObj) {
-
-    var row = '<tr>';
-    row += '<td> ' + ( !musicObj.title ? musicObj.name : musicObj.title) + '</td>';
-    row += '<td> ' + 'musicObj' + '</td>';
-    row += '<td> ' + ( musicObj.album ? musicObj.album : 'none') + '</td>';
-    row += '<td> ' + ( musicObj.genre ? musicObj.genre : 'none' ) + '</td>';
-    row += '</tr>';
-
-    _musicList.append(row);
-  }
-
-  function _selectedMusicToPlay(index) {
-    var filePath = _listSelectedMusic[index].path;
-    _song.setAttribute('src', filePath);
-    var readableStream = fs.createReadStream(filePath);
-    var parser = mm(readableStream, function (err, metadata) {
-      if (err) throw err;
-      _onPlay(metadata);
-      readableStream.close();
-    });
-
-  }
-
-  function _onDoubleClick_rowTable() {
-    var idxRow = $(this).closest("tr").index();
-    _selectedMusicToPlay(idxRow);
-    _currentMusicPlayingIdx = idxRow;
+    _song.onended = _onEnded_musicPlaying;
   }
 
   function _onClick_btnOpenFile() {
-    var musicFiles = [];
-    for (var i = 0; i < this.files.length; i++) {
-      musicFiles.push(this.files[i]);
-    }
-
-    musicFiles.forEach(function(music){
-      addMusicInfoToList(music);
-      console.log(music);
+    var rows = _player.onOpenFile(this);
+    rows.forEach(function(row) {
+      _musicList.append(row);
     });
+  }
 
-    _listSelectedMusic = _listSelectedMusic.concat(musicFiles);
+  function _onEnded_musicPlaying() {
+    _buttonNext.trigger('click');
+  }
 
+  function _onDoubleClick_rowTable(e) {
+    _player.onSelectedRow(e);
+    showInfo();
+  }
+
+  function showInfo() {
+    var x = 0;
+    setInterval(function() {
+      if (x < 2) {
+        _musicTags = _player.getMusicTags();
+        x = x + 1;
+      } else {
+        _displayMusicInfo();
+        clearInterval(this);
+      }
+    }, 1000);
+  }
+
+  function _displayMusicInfo() {
+    var musicTitle = _musicTags.title;
+    //
+    _musicTitle.text(musicTitle);
+    _musicSubTitle.text(_musicTags.artist + " - " + _musicTags.album);
+    //
+    _musicTrack.text(musicTitle);
+    _musicArtist.text(_musicTags.artist);
+    _musicAlbum.text(_musicTags.album);
+    //
+    _playerBar.attr('max', _song.duration.toFixed(0));
   }
 
 })();
