@@ -1,0 +1,100 @@
+
+<html>
+  <head>
+    <title>MP3 Utility</title>
+    <link rel="stylesheet" type="text/css" href="../resources/stylesheets/style.css"/>
+  </head>
+  <body>
+    <!--Header-->
+    <nav class="nav-bar">
+      <div class="nav-content">
+        <div class="button-container">
+          <div class="button-left"><img src="../resources/images/icon_btn_left.png"/></div>
+          <div class="button-play"><img src="../resources/images/icon_btn_play.png"/></div>
+          <div class="button-right"><img src="../resources/images/icon_btn_right.png"/></div>
+        </div>
+        <div class="player-bar-container">
+          <div class="player-layout">
+            <h4>Bloody Poetry</h4>
+            <p>Grieves - Together Apart</p>
+            <div><span class="start-time">00:00</span>
+              <input type="range" min="0" max="100" value="0" class="player-bar-loading"/><span class="end-time">99:99</span>
+            </div>
+          </div>
+        </div>
+        <div class="volume-container">
+          <div class="volume-down"><img src="../resources/images/icon_volume_down.png"/></div>
+          <div class="volume-bar-container">
+            <input type="range" min="1" max="100" value="50" class="volume-bar"/>
+          </div>
+          <div class="volume-up"><img src="../resources/images/icon_volume_up.png"/></div>
+        </div>
+        <div class="open-file-container">
+          <input type="file" multiple="multiple" class="btn-open-file"/><img src="../resources/images/icon_file.png" alt=""/>
+        </div>
+      </div>
+    </nav>
+    <!--Body-->
+    <div class="body-player">
+      <div class="side-music-list-container">
+        <div class="search-bar-container">
+          <input type="text" placeholder="Search"/>
+        </div>
+        <div class="library-container">
+          <ul>
+            <li class="list-title">MUSIC
+              <ul>
+                <li>My Library</li>
+                <li>Quene</li>
+                <li>Starred</li>
+                <li>Recommended</li>
+                <li>Radio</li>
+                <li>Charts</li>
+              </ul>
+            </li>
+            <li class="list-title">PLAYLISTS
+              <ul>
+                <li>Favorites</li>
+                <li>Hip-Hop</li>
+                <li>Deep House</li>
+                <li>All My Music</li>
+                <li>Grieves</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="side-music-info-container">
+        <div class="music-playing-container">
+          <div class="music-playing-info">
+            <div class="music-image-container"><img src="../resources/images/pic_music.png" alt=""/></div>
+            <div class="music details-container">
+              <div class="music-track">Bloody Poetry</div>
+              <div class="music-artist">Grieves</div>
+              <div class="music-album">Together Aparts</div>
+              <div class="music-track-counter">16 Tracks - 65 Mins</div>
+            </div>
+          </div>
+          <div class="music-playing-lyrics">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          </div>
+        </div>
+        <div class="list-music-play-container">
+          <table class="table-scroll">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Genre</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script src="../resources/javascripts/jquery-3.2.1.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+    <script src="../resources/javascripts/mp3-player.js"></script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+//output:../views/layout.html
+
+html
+  head
+    title MP3 Utility
+    link(rel="stylesheet", type="text/css", href="../resources/stylesheets/style.css")
+  body
+    //Header
+    nav.nav-bar
+      div.nav-content
+        div.button-container
+          div.button-left
+            img(src='../resources/images/icon_btn_left.png')
+          div.button-play
+            img(src='../resources/images/icon_btn_play.png')
+          div.button-right
+            img(src='../resources/images/icon_btn_right.png')
+            
+        div.player-bar-container
+          div.player-layout
+            h4 Bloody Poetry
+            p Grieves - Together Apart
+            div
+              span.start-time 00:00
+              input(type="range", min="0", max="100", value="0", class="player-bar-loading")
+              span.end-time 99:99
+                            
+        div.volume-container
+          div.volume-down
+            img(src="../resources/images/icon_volume_down.png")
+          div.volume-bar-container
+            input(type="range", min="1", max="100", value="50", class="volume-bar")
+          div.volume-up
+            img(src="../resources/images/icon_volume_up.png")
+        div.open-file-container
+          input.btn-open-file(type="file", multiple)
+          img(src='../resources/images/icon_file.png', alt="")
+    //Body
+    div.body-player
+      div.side-music-list-container
+        div.search-bar-container
+          input(type='text' placeholder="Search")
+        div.library-container
+          ul
+            li.list-title MUSIC
+              ul
+                li My Library
+                li Quene
+                li Starred
+                li Recommended
+                li Radio
+                li Charts
+            li.list-title PLAYLISTS
+              ul
+                li Favorites
+                li Hip-Hop
+                li Deep House
+                li All My Music
+                li Grieves
+      div.side-music-info-container
+        div.music-playing-container
+          div.music-playing-info
+            div.music-image-container
+              img(src="../resources/images/pic_music.png", alt="")
+            div.music.details-container
+              div.music-track Bloody Poetry
+              div.music-artist Grieves
+              div.music-album Together Aparts
+              div.music-track-counter 16 Tracks - 65 Mins
+          div.music-playing-lyrics
+            p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            
+        div.list-music-play-container
+          table.table-scroll
+            thead
+              tr
+                th Name
+                th Artist
+                th Album
+                th Genre
+            tbody
+              
+              
+    script(src="../resources/javascripts/jquery-3.2.1.min.js", onload="window.$ = window.jQuery = module.exports;")
+    script(src="../resources/javascripts/mp3-player.js")
+          
+        

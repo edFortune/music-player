@@ -1,0 +1,22 @@
+{
+  "name": "mp3-utility",
+  "version": "1.0.0",
+  "description": "A music player application with utilities",
+  "main": "main.js",
+  "scripts": {
+    "postinstall": "electron-builder install-app-deps",
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "https://github.com/edFortune/mp3-player.git",
+  "author": "Owner",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^1.7.5"
+  },
+  "dependencies": {
+    "musicmetadata": "^2.0.5",
+    "node-id3": "0.0.10",
+    "promise": "^8.0.1"
+  }
+}
