@@ -31,13 +31,14 @@ const Visualizer = require('../resources/javascripts/visualizer');
   var _musicDetails = $('.music.details-container');
   var _btnOpenFile = $('.btn-open-file');
   var _musicTags = {};
-  var _musicVisualizer = document.getElementsByClassName('music-playing-visualizer');
+  var _musicVisualizer = document.getElementsByClassName('music-playing-visualizer')[0];
 
 
   // Methodes -----------------
   _constructor();
 
   function _constructor() {
+    console.log(_musicVisualizer);
     _player = new Player(_song);
     //
     _visualiser = new Visualizer(_song, _musicVisualizer);

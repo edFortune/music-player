@@ -1,55 +1,36 @@
-const AudioVisualizer = require('audio-visualizer');
-
-var Visualizer = (function(audioElement, parentElement) {
-  var visualizer = new AudioVisualizer();
-
-  _constructor();
-  function _constructor() {
-
-    // Create Web Audio API references and creates container svg element for visualizer inserted inside parentElement
-    visualizer.containerHeight = 2500;
-    visualizer.containerWidth = 2750;
-    visualizer.create(audioElement, parentElement);
-
-    // Refer to Web Audio API analyser for option's reference
-    visualizer.analyserOptions({
-      fftSize: 2048,
-      minDecibels: -87,
-      maxDecibels: -3,
-      smoothingTimeConstant: 0.83
-    });
-
-    // CSS styling for visualizer container
-    visualizer.containerStyles({
-      position: 'absolute',
-      top: visualizer.containerHeight * -1,
-      left: 0,
-      'z-index': 10000,
-      'pointer-events': 'none'
-    });
-
-    // Options for visualization bars
-    // Available colors: purple, blue, green, red, orange, gray
-    visualizer.options({
-      color: 'orange',
-      opacity: 0.7,
-      interval: 30,
-      frequencyDataDivide: 9,
-      barPadding: 1.7
-    });
+var Visualizer = (function(audio, canvas) {
+  var canvas = canvas;
+  var ctx, source, context, analyser, fbc_array, bars, bar_x, bar_width, bar_height;
 
 
-    visualizer.initialize();
+  window.addEventListener("load", initMp3Player, false);
+
+  function initMp3Player() {
+    context = new AudioContext(); // AudioContext object instance
+    analyser = context.createAnalyser(); // AnalyserNode method
+    ctx = canvas.getContext('2d');
+    // Re-route audio playback into the processing graph of the AudioContext
+    source = context.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(context.destination);
+    frameLooper();
   }
 
-  function start() {
-    visualizer.start();
+  function frameLooper() {
+    window.requestAnimationFrame(frameLooper);
+    fbc_array = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(fbc_array);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    ctx.fillStyle = '#E8710B'; // Color of the bars
+    bars = 100;
+    for (var i = 0; i < bars; i++) {
+      bar_x = i * 3;
+      bar_width = 2;
+      bar_height = -(fbc_array[i] / 2);
+      //  fillRect( x, y, width, height ) // Explanation of the parameters below
+      ctx.fillRect(bar_x, canvas.height, bar_width, bar_height);
+    }
   }
-
-  return{
-    start: start
-  }
-
 
 
 })

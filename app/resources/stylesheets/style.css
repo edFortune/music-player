@@ -262,7 +262,7 @@ body {
 .body-player .side-music-info-container
 .music-playing-container
 .music-playing-info {
-  width: 180%;
+  width: 80%;
 }
 
 .body-player .side-music-info-container
@@ -324,11 +324,8 @@ body {
 }
 
 .body-player .side-music-info-container
-.music-playing-container .music-playing-lyrics p{
-  color: gray;
-  text-align: left;
-  font-size: 15px;
-  margin: 0;
+.music-playing-container .music-playing-visualizer{
+  width: 100%;
 }
 
 .body-player .side-music-info-container
