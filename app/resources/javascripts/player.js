@@ -17,7 +17,7 @@ var Player = (function(song) {
 
   function onClick_ButtonPlay() {
     if (!_isPlaying) {
-      _selectedMusicToPlay(_currentMusicPlayingIdx);
+      _onPlay();
     } else {
       _onPause();
     }
@@ -45,7 +45,7 @@ var Player = (function(song) {
 
   function _onPlay() {
     _song.play();
-    _isPlaying = false;
+    _isPlaying = true;
     _buttonPlayImage.attr('src', _buttonPlayIcon[1]);
     _playingInterval = setInterval(function() {
       _playerBar.val(_song.currentTime.toFixed(0));
@@ -59,7 +59,7 @@ var Player = (function(song) {
     _song.pause();
     _buttonPlayImage.attr('src', _buttonPlayIcon[0]);
     clearInterval(_playingInterval);
-    _isPlaying = true
+    _isPlaying = false;
   }
 
   function convertSeconds(sec) {
