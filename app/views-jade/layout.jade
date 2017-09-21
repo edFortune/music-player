@@ -15,7 +15,7 @@ html
             img(src='../resources/images/icon_btn_play.png')
           div.button-right
             img(src='../resources/images/icon_btn_right.png')
-            
+
         div.player-bar-container
           div.player-layout
             h4 Bloody Poetry
@@ -24,7 +24,7 @@ html
               span.start-time 00:00
               input(type="range", min="0", max="100", value="0", class="player-bar-loading")
               span.end-time 99:99
-                            
+
         div.volume-container
           div.volume-down
             img(src="../resources/images/icon_volume_down.png")
@@ -67,9 +67,8 @@ html
               div.music-artist Grieves
               div.music-album Together Aparts
               div.music-track-counter 16 Tracks - 65 Mins
-          div.music-playing-lyrics
-            p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            
+          div.music-playing-visualizer
+
         div.list-music-play-container
           table.table-scroll
             thead
@@ -79,9 +78,7 @@ html
                 th Album
                 th Genre
             tbody
-              
-              
+
+
     script(src="../resources/javascripts/jquery-3.2.1.min.js", onload="window.$ = window.jQuery = module.exports;")
     script(src="../resources/javascripts/mp3-player.js")
-          
-        

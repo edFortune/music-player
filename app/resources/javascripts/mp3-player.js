@@ -5,10 +5,12 @@ const electron = require('electron');
 const dialog = electron.dialog;
 const Promise = require('promise');
 const Player = require('../resources/javascripts/player');
+const Visualizer = require('../resources/javascripts/visualizer');
 
 (function() {
   // Attributes ----------------
   var _player;
+  var _visualiser;
   var _song = document.createElement('audio');
   var _playerBar = $('.player-bar-loading');
   var _buttonPlay = $('.button-play');
@@ -29,6 +31,7 @@ const Player = require('../resources/javascripts/player');
   var _musicDetails = $('.music.details-container');
   var _btnOpenFile = $('.btn-open-file');
   var _musicTags = {};
+  var _musicVisualizer = document.getElementsByClassName('music-playing-visualizer');
 
 
   // Methodes -----------------
@@ -36,29 +39,23 @@ const Player = require('../resources/javascripts/player');
 
   function _constructor() {
     _player = new Player(_song);
+    //
+    _visualiser = new Visualizer(_song, _musicVisualizer);
+    //
     _player.setPlayerBar(_playerBar);
     _player.setStartTimeCounter(_startTimeCounter);
     _player.setEndTimeCounter(_endTimeCounter);
     _player.setButtonPlayImage(_buttonPlayImage);
     //
     _playerBar.change(_player.onChange_playerBar);
-    //
     _buttonPlay.on('click', _player.onClick_ButtonPlay);
-    //
     _buttonNext.on('click', _player.onClick_ButtonNext.bind(null, showInfo));
-    //
     _buttonPrev.on('click', _player.onClick_ButtonPrev.bind(null, showInfo));
-    //
     _volumeBar.on('change', _player.onChange_volumeBar);
-    //
     _volumeUp.on('click', _player.onClick_volumeUp.bind(null, _volumeBar));
-    //
     _volumeDown.on('click', _player.onClick_volumeDown.bind(null, _volumeBar));
-    //
     _musicList.delegate("tr td", "dblclick", _onDoubleClick_rowTable);
-    //
     _btnOpenFile.on('change', _onClick_btnOpenFile);
-    //
     _song.onended = _onEnded_musicPlaying;
   }
 
@@ -96,7 +93,6 @@ const Player = require('../resources/javascripts/player');
     //
     _musicTitle.text(musicTitle);
     _musicSubTitle.text(_musicTags.artist + " - " + _musicTags.album);
-    //
     _musicTrack.text(musicTitle);
     _musicArtist.text(_musicTags.artist);
     _musicAlbum.text(_musicTags.album);
