@@ -10,14 +10,20 @@ var Player = (function(song) {
   var _endTimeCounter;
   var _buttonPlayImage;
   var _buttonPlayIcon = ['../resources/images/icon_btn_play.png', '../resources/images/icon_btn_pause.png'];
+  var _rowSelected;
+  var _nextRowMusic;
+  var _currentSelectedRow;
 
   _constructor();
 
   function _constructor() {}
 
   function onClick_ButtonPlay() {
+    if (_listSelectedMusic.length <= 0) {
+      return;
+    }
     if (!_isPlaying) {
-      _onPlay();
+      _selectedMusicToPlay(_currentMusicPlayingIdx);
     } else {
       _onPause();
     }
@@ -27,6 +33,11 @@ var Player = (function(song) {
     _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) + 1;
     if (parseInt(_currentMusicPlayingIdx) < parseInt(_listSelectedMusic.length)) {
       _selectedMusicToPlay(_currentMusicPlayingIdx);
+      var nextRow = _getNextRow();
+      if (nextRow) {
+        _colorSelectedRow(nextRow);
+        _currentSelectedRow = nextRow;
+      }
       callback();
     } else {
       _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) - 1;
@@ -37,6 +48,11 @@ var Player = (function(song) {
     _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) - 1;
     if (parseInt(_currentMusicPlayingIdx) >= 0) {
       _selectedMusicToPlay(_currentMusicPlayingIdx);
+      var prevRow = _getPrevRow();
+      if (prevRow) {
+        _colorSelectedRow(prevRow);
+        _currentSelectedRow = prevRow;
+      }
       callback();
     } else {
       _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) + 1;
@@ -129,7 +145,9 @@ var Player = (function(song) {
   function onSelectedRow(e) {
     var idxRow = $(e.target).closest("tr").index();
     _selectedMusicToPlay(idxRow);
+    _colorSelectedRow(e.target);
     _currentMusicPlayingIdx = idxRow;
+    _currentSelectedRow = e.target;
   }
 
   function onOpenFile(self) {
@@ -164,6 +182,40 @@ var Player = (function(song) {
     _buttonPlayImage = btnImg;
   }
 
+  function onClick_SelectedRow(e) {
+    _colorSelectedRow(e.target);
+  }
+
+  function _colorSelectedRow(target) {
+    if (_rowSelected) {
+      _rowSelected.css('background-color', '')
+    }
+
+    _rowSelected = $(target).closest("tr");
+    _rowSelected.css('background-color', '#E8710B');
+
+  }
+
+  function _getNextRow() {
+    var nextRow;
+    if (_currentSelectedRow.parentElement.nextSibling) {
+      nextRow = _currentSelectedRow.parentElement.nextSibling.children[0];
+    } else {
+      nextRow = null;
+    }
+    return nextRow;
+  }
+
+  function _getPrevRow() {
+    var prevRow;
+    if (_currentSelectedRow.parentElement.previousSibling) {
+      prevRow = _currentSelectedRow.parentElement.previousSibling.children[0];
+    } else {
+      prevRow = null;
+    }
+    return prevRow;
+  }
+
   return {
     onOpenFile: onOpenFile,
     onSelectedRow: onSelectedRow,
@@ -178,7 +230,8 @@ var Player = (function(song) {
     setButtonPlayImage: setButtonPlayImage,
     onChange_volumeBar: onChange_volumeBar,
     onClick_volumeUp: onClick_volumeUp,
-    onClick_volumeDown: onClick_volumeDown
+    onClick_volumeDown: onClick_volumeDown,
+    onClick_SelectedRow: onClick_SelectedRow
   }
 
 })

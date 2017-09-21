@@ -27,7 +27,7 @@ const Visualizer = require('../resources/javascripts/visualizer');
   var _musicTrack = $('.music-track');
   var _musicArtist = $('.music-artist');
   var _musicAlbum = $('.music-album');
-  var _musicList = $('.body-player .side-music-info-container .list-music-play-container table.table-scroll tbody');
+  var _tableMusicList = $('.body-player .side-music-info-container .list-music-play-container table.table-scroll tbody');
   var _musicDetails = $('.music.details-container');
   var _btnOpenFile = $('.btn-open-file');
   var _musicTags = {};
@@ -38,7 +38,6 @@ const Visualizer = require('../resources/javascripts/visualizer');
   _constructor();
 
   function _constructor() {
-    console.log(_musicVisualizer);
     _player = new Player(_song);
     //
     _visualiser = new Visualizer(_song, _musicVisualizer);
@@ -55,7 +54,8 @@ const Visualizer = require('../resources/javascripts/visualizer');
     _volumeBar.on('change', _player.onChange_volumeBar);
     _volumeUp.on('click', _player.onClick_volumeUp.bind(null, _volumeBar));
     _volumeDown.on('click', _player.onClick_volumeDown.bind(null, _volumeBar));
-    _musicList.delegate("tr td", "dblclick", _onDoubleClick_rowTable);
+    _tableMusicList.delegate("tr td", "dblclick", _onDoubleClick_rowTable);
+    _tableMusicList.delegate("tr td", "click", _onClick_rowTable);
     _btnOpenFile.on('change', _onClick_btnOpenFile);
     _song.onended = _onEnded_musicPlaying;
   }
@@ -63,7 +63,7 @@ const Visualizer = require('../resources/javascripts/visualizer');
   function _onClick_btnOpenFile() {
     var rows = _player.onOpenFile(this);
     rows.forEach(function(row) {
-      _musicList.append(row);
+      _tableMusicList.append(row);
     });
   }
 
@@ -74,6 +74,10 @@ const Visualizer = require('../resources/javascripts/visualizer');
   function _onDoubleClick_rowTable(e) {
     _player.onSelectedRow(e);
     showInfo();
+  }
+
+  function _onClick_rowTable(e) {
+    _player.onClick_SelectedRow(e);
   }
 
   function showInfo() {
