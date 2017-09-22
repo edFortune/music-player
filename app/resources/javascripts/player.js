@@ -14,6 +14,7 @@ var Player = (function(song) {
   var _rowSelected;
   var _nextRowMusic;
   var _currentSelectedRow;
+  var _showInfoCallBack;
 
   _constructor();
 
@@ -25,6 +26,10 @@ var Player = (function(song) {
     }
     if (_isStop) {
       _selectedMusicToPlay(_currentMusicPlayingIdx);
+      if(_showInfoCallBack){
+        _showInfoCallBack();
+        _showInfoCallBack = null;
+      }
     } else if(!_isPlaying){
       _onPlay();
     }else {
@@ -243,7 +248,7 @@ var Player = (function(song) {
     return prevRow;
   }
 
-  function removeMusic(idx, cb) {
+  function removeMusic(idx, cb, showCb) {
     if(idx == _currentMusicPlayingIdx){
 
       var nextRow = _getNextRow();
@@ -253,6 +258,7 @@ var Player = (function(song) {
       }
       _onStop();
       cb();
+      _showInfoCallBack = showCb;
     }
 
     _listSelectedMusic.splice(idx, 1);
