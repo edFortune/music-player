@@ -2,6 +2,7 @@ var Player = (function(song) {
   var _listSelectedMusic = [];
   var _currentMusicPlayingIdx = 0;
   var _isPlaying = false;
+  var _isStop = true;
   var _playingInterval = 0;
   var _song = song;
   var _musicTags = {};
@@ -22,16 +23,17 @@ var Player = (function(song) {
     if (_listSelectedMusic.length <= 0) {
       return;
     }
-    if (!_isPlaying) {
+    if (_isStop) {
       _selectedMusicToPlay(_currentMusicPlayingIdx);
-    } else {
+    } else if(!_isPlaying){
+      _onPlay();
+    }else {
       _onPause();
     }
   }
 
   function onClick_ButtonNext(callback) {
-    _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) + 1;
-    if (parseInt(_currentMusicPlayingIdx) < parseInt(_listSelectedMusic.length)) {
+    if (isNextMusicPlayingIdxExist()) {
       _selectedMusicToPlay(_currentMusicPlayingIdx);
       var nextRow = _getNextRow();
       if (nextRow) {
@@ -39,14 +41,11 @@ var Player = (function(song) {
         _currentSelectedRow = nextRow;
       }
       callback();
-    } else {
-      _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) - 1;
     }
   }
 
   function onClick_ButtonPrev(callback) {
-    _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) - 1;
-    if (parseInt(_currentMusicPlayingIdx) >= 0) {
+    if (isPrevMusicPlayingIdxExist()) {
       _selectedMusicToPlay(_currentMusicPlayingIdx);
       var prevRow = _getPrevRow();
       if (prevRow) {
@@ -54,9 +53,27 @@ var Player = (function(song) {
         _currentSelectedRow = prevRow;
       }
       callback();
+    }
+  }
+
+  function isNextMusicPlayingIdxExist() {
+    _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) + 1;
+    if (parseInt(_currentMusicPlayingIdx) < parseInt(_listSelectedMusic.length)) {
+      return true
+    } else {
+      _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) - 1;
+    }
+    return false;
+  }
+
+  function isPrevMusicPlayingIdxExist() {
+    _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) - 1;
+    if (parseInt(_currentMusicPlayingIdx) < parseInt(_listSelectedMusic.length)) {
+      return true
     } else {
       _currentMusicPlayingIdx = parseInt(_currentMusicPlayingIdx) + 1;
     }
+    return false;
   }
 
   function _onPlay() {
@@ -76,6 +93,14 @@ var Player = (function(song) {
     _buttonPlayImage.attr('src', _buttonPlayIcon[0]);
     clearInterval(_playingInterval);
     _isPlaying = false;
+  }
+
+  function _onStop() {
+    _song.pause();
+    _buttonPlayImage.attr('src', _buttonPlayIcon[0]);
+    clearInterval(_playingInterval);
+    //_song.setAttribute('src', '');
+    _isStop = true;
   }
 
   function convertSeconds(sec) {
@@ -117,6 +142,7 @@ var Player = (function(song) {
     row += '<td> ' + 'musicObj' + '</td>';
     row += '<td> ' + (musicObj.album ? musicObj.album : 'none') + '</td>';
     row += '<td> ' + (musicObj.genre ? musicObj.genre : 'none') + '</td>';
+    row += "<td> <img src='../resources/images/icon_remove.png'/></td>";
     row += '</tr>';
 
     return row;
@@ -125,7 +151,8 @@ var Player = (function(song) {
   function _selectedMusicToPlay(index) {
     var filePath = _listSelectedMusic[index].path;
     _song.setAttribute('src', filePath);
-
+    _isStop = false;
+    console.log(index);
     return new Promise(function(resolve, reject) {
       mm(fs.createReadStream(filePath), function(err, metadata) {
         if (err) throw err;
@@ -216,6 +243,21 @@ var Player = (function(song) {
     return prevRow;
   }
 
+  function removeMusic(idx, cb) {
+    if(idx == _currentMusicPlayingIdx){
+
+      var nextRow = _getNextRow();
+      if (nextRow) {
+        _colorSelectedRow(nextRow);
+        _currentSelectedRow = nextRow;
+      }
+      _onStop();
+      cb();
+    }
+
+    _listSelectedMusic.splice(idx, 1);
+  }
+
   return {
     onOpenFile: onOpenFile,
     onSelectedRow: onSelectedRow,
@@ -231,7 +273,8 @@ var Player = (function(song) {
     onChange_volumeBar: onChange_volumeBar,
     onClick_volumeUp: onClick_volumeUp,
     onClick_volumeDown: onClick_volumeDown,
-    onClick_SelectedRow: onClick_SelectedRow
+    onClick_SelectedRow: onClick_SelectedRow,
+    removeMusic: removeMusic
   }
 
 })

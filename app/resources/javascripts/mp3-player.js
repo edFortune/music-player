@@ -28,10 +28,12 @@ const Visualizer = require('../resources/javascripts/visualizer');
   var _musicArtist = $('.music-artist');
   var _musicAlbum = $('.music-album');
   var _tableMusicList = $('.body-player .side-music-info-container .list-music-play-container table.table-scroll tbody');
+  var _removeButton = _tableMusicList;
   var _musicDetails = $('.music.details-container');
   var _btnOpenFile = $('.btn-open-file');
   var _musicTags = {};
   var _musicVisualizer = document.getElementsByClassName('music-playing-visualizer')[0];
+  var _playingInterval;
 
 
   // Methodes -----------------
@@ -56,6 +58,7 @@ const Visualizer = require('../resources/javascripts/visualizer');
     _volumeDown.on('click', _player.onClick_volumeDown.bind(null, _volumeBar));
     _tableMusicList.delegate("tr td", "dblclick", _onDoubleClick_rowTable);
     _tableMusicList.delegate("tr td", "click", _onClick_rowTable);
+    _removeButton.delegate('tr td:nth-child(5)', 'click', _onClickRemoveRow);
     _btnOpenFile.on('change', _onClick_btnOpenFile);
     _song.onended = _onEnded_musicPlaying;
   }
@@ -82,7 +85,7 @@ const Visualizer = require('../resources/javascripts/visualizer');
 
   function showInfo() {
     var x = 0;
-    setInterval(function() {
+    _playingInterval = setInterval(function() {
       if (x < 2) {
         _musicTags = _player.getMusicTags();
         x = x + 1;
@@ -103,6 +106,32 @@ const Visualizer = require('../resources/javascripts/visualizer');
     _musicAlbum.text(_musicTags.album);
     //
     _playerBar.attr('max', _song.duration.toFixed(0));
+  }
+
+  function _onClickRemoveRow(e) {
+    var indexRow = $(e.target).closest('tr').index();
+    _player.removeMusic(indexRow, _initMusicInfo, showInfo);
+    $(e.target).closest('tr').remove();
+  }
+
+  function _initMusicInfo() {
+    console.log('Yes');
+
+    if(_playingInterval){
+      clearInterval(_playingInterval);
+    }
+
+    _musicTitle.text('Bloody Poetry');
+    _musicSubTitle.text("Grieves" + " - " + "Together Apart");
+    _musicTrack.text("Bloody Poetry");
+    _musicArtist.text("Grieves");
+    _musicAlbum.text("Together Apart");
+    //
+    _startTimeCounter.text("00:00");
+    _endTimeCounter.text("99:99");
+    _playerBar.val(0)
+    _playerBar.attr('max', 100);
+
   }
 
 })();

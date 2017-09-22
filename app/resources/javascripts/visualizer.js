@@ -3,7 +3,7 @@ var Visualizer = (function(audio, canvas) {
   var ctx, source, context, analyser, fbc_array, bars, bar_x, bar_width, bar_height;
 
 
-  window.addEventListener("load", initMp3Player, false);
+  //window.addEventListener("load", initMp3Player, false);
 
   function initMp3Player() {
     context = new AudioContext(); // AudioContext object instance

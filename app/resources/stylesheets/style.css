@@ -381,6 +381,7 @@ body {
 .body-player .side-music-info-container
 .list-music-play-container table.table-scroll > tbody > tr {
   max-width: 99%;
+  height: 38px;
 }
 
 .body-player .side-music-info-container
@@ -392,13 +393,34 @@ body {
   border-radius: 5px;
 }
 
-
 .body-player .side-music-info-container
 .list-music-play-container table.table-scroll
 thead tr th:nth-child(1), tbody tr td:nth-child(1) {
   width: 40%;
   margin-left: 10px;
 }
+
+.body-player .side-music-info-container
+.list-music-play-container table.table-scroll
+thead tr th:nth-child(5), tbody tr td:nth-child(5) {
+  width: 3%;
+}
+
+
+.body-player .side-music-info-container
+.list-music-play-container table.table-scroll
+tbody tr td:nth-child(5) img {
+  width: 25px;
+  margin: auto;
+  display: none;
+}
+
+.body-player .side-music-info-container
+.list-music-play-container table.table-scroll
+tbody tr td:nth-child(5):hover > img {
+  display: block;
+}
+
 
 
 
